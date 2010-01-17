@@ -1,0 +1,12 @@
+This project contains emacs/elisp utilities for working with Jekyll
+projects.
+
+Sample usage/configuration is (.emacs):
+
+(require 'jekyll-launch)
+(global-set-key "\C-cjl" 'jekyll-launch)
+(global-set-key "\C-cjs" 'jekyll-launch-server)
+(global-set-key "\C-cjk" 'jekyll-launch-kill-server)
+(global-set-key "\C-cjn" 'jekyll-launch-new-post)
+
+It is still in early stages of development.
