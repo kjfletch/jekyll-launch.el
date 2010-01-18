@@ -3,8 +3,8 @@
 ;; Author: Kevin J. Fletcher <kevinjohn.fletcher@googlemail.com>
 ;; Maintainer: Kevin J. Fletcher <kevinjohn.fletcher@googlemail.com>
 ;; Keywords: jekyll, weblog
-;; Homepage: todo: add website here.
-;; Version: 0.1 - prerelease.
+;; Homepage: http://github.com/kjfletch/jekyll-launch.el
+;; Version: 0.2 - prerelease.
 ;; 
 ;;; Commentary
 ;;
@@ -39,32 +39,38 @@
 ;;; Code
 
 (defun jekyll-launch ()
-  "Launch jekyll for the current project to generate your site."
+  "Launch jekyll for the current project to generate your site.
+Interactive wrapper."
   (interactive)
-  (let ((project-dir (jekyll-launch-find-project)))
-    (if project-dir
-	(jekyll-launch-do project-dir "jekyll"))))
+  (jekyll-launch-do-if-found-project 'jekyll-launch-do 
+				     "jekyll"))
 
 (defun jekyll-launch-server()
-  "Launch a jekyll development server for the current project."
+  "Launch a jekyll development server for the current project.
+Interactive wrapper."
   (interactive)
-  (let ((project-dir (jekyll-launch-find-project)))
-    (if project-dir
-	(jekyll-launch-server-do project-dir "jekyll"))))
+  (jekyll-launch-do-if-found-project 'jekyll-launch-server-do
+				     "jekyll"))
 
 (defun jekyll-launch-kill-server ()
-  "Kill a jekyll development server for the current project."
+  "Kill a jekyll development server for the current project.
+Interactive wrapper."
   (interactive)
-  (let ((project-dir (jekyll-launch-find-project)))
-    (if project-dir
-	(jekyll-launch-kill-server-do project-dir))))
+  (jekyll-launch-do-if-found-project 'jekyll-launch-kill-server-do))
 
 (defun jekyll-launch-new-post ()
-  "Create a new post in the current jekyll project."
+  "Create a new post in the current jekyll project.
+Interactive wrapper."
   (interactive)
+  (jekyll-launch-do-if-found-project 'jekyll-launch-new-post-do))
+
+(defun jekyll-launch-do-if-found-project (func &rest arguments)
+  "Call the given function, with the passed arguments if a project
+folder can be found. First argument is always the project directory."
   (let ((dir (jekyll-launch-find-project)))
     (if dir
-	(jekyll-launch-new-post-do dir))))
+	(apply func dir arguments)
+      (message "Could not find Jekyll project."))))
 
 (defun jekyll-launch-find-project()
   "Find a jekyll project by looking in the current working directory
@@ -73,7 +79,7 @@ places to search."
   (jekyll-launch-find-project-do default-directory nil))
 
 (defun jekyll-launch-do (project-dir cmd)
-  "Programatically launch jekyll for a given project."
+  "Launch jekyll for a given project."
   (let ((default-directory project-dir)
 	(procname (concat "jekyll:" project-dir)))
 
@@ -84,7 +90,7 @@ places to search."
     (view-buffer-other-window procname)))
 
 (defun jekyll-launch-server-do (project-dir cmd)
-  "Programatically launch a jekyll development server for a given project."
+  "Launch a jekyll development server for a given project."
   (let ((default-directory project-dir)
 	(procname (concat "jekyllserver:" project-dir)))
 
